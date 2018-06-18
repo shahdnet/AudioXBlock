@@ -2,6 +2,7 @@
 
 import pkg_resources
 
+from django.template.loader import get_template
 from xblock.core import XBlock
 from xblock.fields import Scope, Integer, String
 from xblock.fragment import Fragment
@@ -30,8 +31,15 @@ class AudioXBlock(XBlock):
         The primary view of the AudioXBlock, shown to students
         when viewing courses.
         """
-        html = self.resource_string("static/html/audio.html")
-        frag = Fragment(html.format(src = self.src))
+        context = {
+            'src': self.src
+        }
+        frag = Fragment()
+        frag.add_content(
+            get_template(
+                "audio.html"
+            ).render( context )
+        )
         frag.add_css(self.resource_string("static/css/audio.css"))
         return frag
 
@@ -39,10 +47,17 @@ class AudioXBlock(XBlock):
         """
         The view for editing the AudioXBlock parameters inside Studio.
         """
-        html = self.resource_string("static/html/audio_edit.html")
-        frag = Fragment(html.format(src=self.src))
+        context = {
+            'src': self.src
+        }
+        frag = Fragment()
+        frag.add_content(
+            get_template(
+                "audio_edit.html"
+            ).render( context )
+        )
 
-        js = self.resource_string("static/js/src/audio_edit.js")
+        js = self.resource_string("static/js/audio_edit.js")
         frag.add_javascript(js)
         frag.initialize_js('AudioEditBlock')
 
